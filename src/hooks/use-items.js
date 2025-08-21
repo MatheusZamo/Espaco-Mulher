@@ -1,5 +1,5 @@
 import localforage from "localforage"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 
 const useItems = () => {
   const [items, setItems] = useState([])
@@ -22,21 +22,29 @@ const useItems = () => {
       .catch((error) => alert(error.message))
   }, [])
 
-  const handleSubmitForm = (newItem) => setItems((prev) => [...prev, newItem])
+  const handleSubmitForm = useCallback(
+    (newItem) => setItems((prev) => [...prev, newItem]),
+    [],
+  )
 
-  const handleClickClearList = () => setItems([])
+  const handleClickClearList = useCallback(() => setItems([]), [])
 
-  const handleClickDelete = (id) =>
-    setItems((i) => i.filter((item) => item.id !== id))
+  const handleClickDelete = useCallback(
+    (id) => setItems((i) => i.filter((item) => item.id !== id)),
+    [],
+  )
 
-  const handleClickCheck = (id) =>
-    setItems((i) =>
-      i.map((item) =>
-        item.id === id ? { ...item, stored: !item.stored } : item,
+  const handleClickCheck = useCallback(
+    (id) =>
+      setItems((i) =>
+        i.map((item) =>
+          item.id === id ? { ...item, stored: !item.stored } : item,
+        ),
       ),
-    )
+    [],
+  )
 
-  const handleChangeOrder = (e) => setOrderBy(e.target.value)
+  const handleChangeOrder = useCallback((e) => setOrderBy(e.target.value), [])
 
   return {
     items,
